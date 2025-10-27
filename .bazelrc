@@ -6,6 +6,8 @@ build --jobs 128
 build --define='absl=1'  # for gtest
 build --enable_platform_specific_config
 build --cxxopt=-D__BIONIC_NO_STDCPP_LOCALE_FUNCTIONS__
+build --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=1
+build --cxxopt=-D_GLIBCXX_USE_CXX11_ABI=1 -stdlib=libc++
 
 # Enable stack traces
 test --test_env="GTEST_INSTALL_FAILURE_SIGNAL_HANDLER=1"
