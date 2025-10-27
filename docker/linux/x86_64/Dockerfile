@@ -7,6 +7,10 @@ FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN sed -i 's|http://.*archive.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list && \
+    sed -i 's|http://.*security.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list && \
+    apt-get clean && apt-get update
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         apt-transport-https \
