@@ -7,9 +7,17 @@ FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN sed -i 's|http://.*archive.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list && \
-    sed -i 's|http://.*security.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list && \
-    apt-get clean && apt-get update
+RUN set -eux; \
+    echo "Checking fastest APT mirror..."; \
+    if ping -c 1 mirrors.aliyun.com &>/dev/null; then \
+        echo "✅ Detected China network. Using Aliyun mirror."; \
+        sed -i 's|http://.*archive.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list; \
+        sed -i 's|http://.*security.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/sources.list; \
+    else \
+        echo "🌍 Using default Ubuntu mirror (archive.ubuntu.com)"; \
+    fi; \
+    apt-get clean; \
+    apt-get update -o Acquire::Retries=3 -o Acquire::http::No-Cache=True
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
